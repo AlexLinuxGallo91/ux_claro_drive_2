@@ -1,2 +1,2 @@
-# ux_claro_drive_2
-version 2
+# ux_claro_drive
+Experiencia de Usuario con Claro Drive y Selenium
