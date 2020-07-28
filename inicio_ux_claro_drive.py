@@ -25,23 +25,23 @@ def inicio_sesion_claro_drive(webdriver_test_ux: webdriver, jsonEval, jsonArgs):
 
     try:
         webdriver_test_ux.get('https://www.clarodrive.com/')
-        btn_inicio_sesion = WebDriverWait(webdriver_test_ux, 10).until(EC.presence_of_element_located((By.ID, 'login')))
+        btn_inicio_sesion = WebDriverWait(webdriver_test_ux, 6).until(EC.presence_of_element_located((By.ID, 'login')))
         btn_inicio_sesion.click()
 
-        input_email = WebDriverWait(webdriver_test_ux, 10).until(
+        input_email = WebDriverWait(webdriver_test_ux, 6).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'InputEmail')))
         input_email.send_keys(jsonArgs['user'])
 
-        input_password = WebDriverWait(webdriver_test_ux, 10).until(
+        input_password = WebDriverWait(webdriver_test_ux, 6).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'InputPassword')))
         input_password.send_keys(jsonArgs['password'])
 
-        btn_ingreso_cuenta = WebDriverWait(webdriver_test_ux, 10).until(
+        btn_ingreso_cuenta = WebDriverWait(webdriver_test_ux, 6).until(
             EC.presence_of_element_located((By.XPATH, '//button[text()="INICIAR SESI\u00D3N"]')))
         btn_ingreso_cuenta.click()
 
-        WebDriverWait(webdriver_test_ux, 60).until(
-            EC.presence_of_element_located((By.CLASS_NAME, 'button-create-resource')))
+        WebDriverWait(webdriver_test_ux, 20).until(
+            EC.element_to_be_clickable((By.XPATH, '//span[text()="Folder "][@class="name-without-extension"]')))
 
         jsonEval["steps"][0]["output"][0]["status"] = jsonConst.SUCCESS
         jsonEval["steps"][0]["status"] = jsonConst.SUCCESS
@@ -79,10 +79,10 @@ def carga_archivo_claro_drive(webdriver_test_ux: webdriver, path_archivo_carga: 
             EC.element_to_be_clickable((By.XPATH, '//span[text()="Folder "][@class="name-without-extension"]')))
         carpeta_folder.click()
 
-        WebDriverWait(webdriver_test_ux, 20).until(
+        WebDriverWait(webdriver_test_ux, 10).until(
             EC.element_to_be_clickable((By.XPATH, '//span[text()=" Folder "][@class="last"]')))
 
-        input_file = WebDriverWait(webdriver_test_ux, 20).until(
+        input_file = WebDriverWait(webdriver_test_ux, 10).until(
             EC.presence_of_element_located((By.ID, 'file_upload_start')))
 
         input_file.send_keys(path_archivo_carga)
@@ -125,40 +125,19 @@ def descarga_archivo_claro_drive(webdriver_test_ux: webdriver, nombre_archivo_si
     fecha_inicio = Temporizador.obtener_fecha_tiempo_actual()
 
     try:
-        WebDriverWait(webdriver_test_ux, 20).until(
-            EC.element_to_be_clickable((By.XPATH, '//div[@class="filename"]')))
 
-        lista_archivos_divs = webdriver_test_ux.find_elements_by_class_name('filename')
+        webdriver_test_ux.refresh()
 
-        for div_con_archivo_contenido in lista_archivos_divs:
-            span_nombre_archivo_sin_ext = div_con_archivo_contenido.find_element_by_class_name('name-without-extension')
-            span_ext_archivo = div_con_archivo_contenido.find_element_by_class_name('ext')
-            nombre_completo_archivo_obtenido = '{}{}'.format(span_nombre_archivo_sin_ext.text, span_ext_archivo.text)
-            nombre_archivo_por_analizar = '{}{}'.format(nombre_archivo_sin_ext, ext_archivo)
+        archivo_a_descargar = WebDriverWait(webdriver_test_ux, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//span[@class="name-without-extension"][text()="{} "]'.format(nombre_archivo_sin_ext))))
 
-            if nombre_completo_archivo_obtenido == nombre_archivo_por_analizar:
-                btn_acciones = WebDriverWait(div_con_archivo_contenido, 20).until(
-                    EC.element_to_be_clickable((By.XPATH, '//div[@class="open-menu icon-more"]')))
+        archivo_a_descargar.click()
 
-                # WebDriverWait(div_con_archivo_contenido, 20).until(
-                #     EC.element_to_be_clickable(
-                #         (By.XPATH, '//div[@class="open-menu icon-more" and style="display: none;"]')))
-                #
-                btn_acciones.click()
+        btn_descarga = WebDriverWait(webdriver_test_ux, 20).until(EC.element_to_be_clickable(
+            (By.XPATH, '//input[@type="button"][@class="menuItem svg downloadImage icon-download icon-32"]')))
 
-                btn_descargar = WebDriverWait(div_con_archivo_contenido, 20).until(
-                    EC.element_to_be_clickable((By.XPATH, '//div[@class="action-name"][text()=" Descargar "]')))
-
-                btn_descargar.click()
-
-
-                # WebDriverWait(div_con_archivo_contenido, 20).until(EC.presence_of_element_located(
-                #     (By.XPATH, '//div[@class="row type-success"][text()="Descarga exitosa"]')))
-
-                # WebDriverWait(div_con_archivo_contenido, 20).until(EC.presence_of_element_located(
-                #     (By.XPATH, '//div[@id="notification"]/div[@class="row type-success"][text()="Descarga exitosa"]')))
-
-                break
+        btn_descarga.click()
 
         jsonEval["steps"][2]["output"][0]["status"] = jsonConst.SUCCESS
         jsonEval["steps"][2]["status"] = jsonConst.SUCCESS
@@ -193,49 +172,19 @@ def borrar_archivo_claro_drive(webdriver_test_ux: webdriver, jsonEval, nombre_ar
     fecha_inicio = Temporizador.obtener_fecha_tiempo_actual()
 
     try:
-        WebDriverWait(webdriver_test_ux, 20).until(
-            EC.element_to_be_clickable((By.XPATH, '//div[@class="filename"]')))
 
-        lista_archivos_divs = webdriver_test_ux.find_elements_by_class_name('filename')
+        webdriver_test_ux.refresh()
 
-        for div_con_archivo_contenido in lista_archivos_divs:
-            span_nombre_archivo_sin_ext = div_con_archivo_contenido.find_element_by_class_name('name-without-extension')
-            span_ext_archivo = div_con_archivo_contenido.find_element_by_class_name('ext')
-            nombre_completo_archivo_obtenido = '{}{}'.format(span_nombre_archivo_sin_ext.text, span_ext_archivo.text)
-            nombre_archivo_por_analizar = '{}{}'.format(nombre_archivo_sin_ext, ext_archivo)
+        archivo_por_eliminar = WebDriverWait(webdriver_test_ux, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, '//span[@class="name-without-extension"][text()="{} "]'.format(nombre_archivo_sin_ext))))
 
-            if nombre_completo_archivo_obtenido == nombre_archivo_por_analizar:
-                btn_acciones = WebDriverWait(div_con_archivo_contenido, 20).until(
-                    EC.element_to_be_clickable((By.XPATH, '//div[@class="open-menu icon-more"]')))
+        archivo_por_eliminar.click()
 
-                btn_acciones.click()
+        btn_borrar = WebDriverWait(webdriver_test_ux, 20).until(EC.element_to_be_clickable(
+            (By.XPATH, '//input[@type="button"][@class="menuItem svg deleteImage icon-delete icon-32"]')))
 
-                btn_descargar = WebDriverWait(div_con_archivo_contenido, 20).until(
-                    EC.element_to_be_clickable(
-                        (By.XPATH, '//div[@class="action-name"][text()=" Mover a papelera "]')))
-
-                btn_descargar.click()
-
-                WebDriverWait(div_con_archivo_contenido, 20).until(EC.visibility_of_element_located(
-                    (By.XPATH, '//div[@class="row type-success"]')))
-
-                # WebDriverWait(div_con_archivo_contenido, 20).until(EC.visibility_of_element_located(
-                #     (By.XPATH, '//div[@class="row type-success"][text()="1 elemento movido a papelera"]')))
-
-                break
-
-        # btn_borrar = webdriver_test_ux.find_element_by_xpath(
-        #     '//input[@class="menuItem svg deleteImage icon-delete icon-32"]')
-        # btn_borrar.click()
-        # time.sleep(10)
-        # btn_cerrar = webdriver_test_ux.find_element_by_xpath('//input[@class="svg exit icon-close icon-32"]')
-        # time.sleep(4)
-        # btn_cerrar.click()
-        # time.sleep(4)
-        #
-        # Mover
-        # a
-        # papelera
+        btn_borrar.click()
 
         jsonEval["steps"][3]["output"][0]["status"] = jsonConst.SUCCESS
         jsonEval["steps"][3]["status"] = jsonConst.SUCCESS
@@ -244,19 +193,19 @@ def borrar_archivo_claro_drive(webdriver_test_ux: webdriver, jsonEval, nombre_ar
         jsonEval["steps"][3]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["output"][0][
-            "output"] = 'No fue posibles realizar el borrado del archivo correctamente: {}'.format(e.msg)
+            "output"] = 'No fue posible realizar el borrado del archivo correctamente: {}'.format(e.msg)
 
     except ElementClickInterceptedException as e:
         jsonEval["steps"][3]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["output"][0][
-            "output"] = 'No fue posibles realizar el borrado del archivo correctamente: {}'.format(e.msg)
+            "output"] = 'No fue posible realizar el borrado del archivo correctamente: {}'.format(e.msg)
 
     except TimeoutException as e:
         jsonEval["steps"][3]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["status"] = jsonConst.FAILED
         jsonEval["steps"][3]["output"][0][
-            "output"] = 'No fue posibles realizar el borrado del archivo correctamente: {}'.format(e.msg)
+            "output"] = 'No fue posible realizar el borrado del archivo correctamente: {}'.format(e.msg)
 
     tiempo_step_final = Temporizador.obtener_tiempo_timer() - tiempo_step_inicio
     fecha_fin = Temporizador.obtener_fecha_tiempo_actual()
@@ -272,32 +221,39 @@ def cerrar_sesion_claro_drive(webdriver_test_ux: webdriver, jsonEval):
     fecha_inicio = Temporizador.obtener_fecha_tiempo_actual()
 
     try:
-        boton_ajustes = webdriver_test_ux.find_element_by_id('expand')
+        webdriver_test_ux.refresh()
+        boton_ajustes = WebDriverWait(webdriver_test_ux, 10).until(EC.element_to_be_clickable((By.ID, 'expand')))
         boton_ajustes.click()
 
-        time.sleep(4)
-        boton_cerrar_sesion = webdriver_test_ux.find_element_by_xpath('//li[@data-id="logout"]')
+        boton_cerrar_sesion = WebDriverWait(webdriver_test_ux, 20).until(
+            EC.element_to_be_clickable((By.XPATH, '//li[@data-id="logout"]/a')))
+
         boton_cerrar_sesion.click()
-        time.sleep(10)
+        WebDriverWait(webdriver_test_ux, 10).until(EC.presence_of_element_located((By.ID, 'login')))
 
         jsonEval["steps"][4]["output"][0]["status"] = jsonConst.SUCCESS
         jsonEval["steps"][4]["status"] = jsonConst.SUCCESS
         jsonEval["steps"][4]["output"][0]["output"] = 'Se cierra sesion correctamente'
 
-    except NoSuchElementException:
+    except NoSuchElementException as e:
         jsonEval["steps"][4]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][4]["status"] = jsonConst.FAILED
-        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion'
+        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion: {}'.format(e.msg)
 
-    except ElementClickInterceptedException:
+    except ElementClickInterceptedException as e:
         jsonEval["steps"][4]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][4]["status"] = jsonConst.FAILED
-        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion'
+        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion: {}'.format(e.msg)
 
-    except TimeoutException:
+    except TimeoutException as e:
         jsonEval["steps"][4]["output"][0]["status"] = jsonConst.FAILED
         jsonEval["steps"][4]["status"] = jsonConst.FAILED
-        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion'
+        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion: {}'.format(e.msg)
+
+    except ElementNotInteractableException as e:
+        jsonEval["steps"][4]["output"][0]["status"] = jsonConst.FAILED
+        jsonEval["steps"][4]["status"] = jsonConst.FAILED
+        jsonEval["steps"][4]["output"][0]["output"] = 'No fue posible realizar el cierre de sesion: {}'.format(e.msg)
 
     tiempo_step_final = Temporizador.obtener_tiempo_timer() - tiempo_step_inicio
     fecha_fin = Temporizador.obtener_fecha_tiempo_actual()

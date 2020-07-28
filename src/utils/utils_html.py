@@ -34,15 +34,35 @@ class ValidacionesHtml:
             pass
         except TimeoutException:
             pass
-        #
-        # id
-        # oc - dialog - fileexists - content
-        #
-        # id
-        # checkbox - allnewfiles
-        #
-        # < button
-        #
-        # class ="continue" disabled="" > Continuar < / button >
-        #
-        # class = up-file-actions isDone
+
+    @staticmethod
+    def minimizar_ventana_estatus_descarga(webdriver_test_ux: WebDriver):
+
+        try:
+            btn_minimizar = WebDriverWait(webdriver_test_ux, 6).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'up-minimize')))
+
+            btn_minimizar.click()
+
+        except ElementNotInteractableException:
+            pass
+        except NoSuchElementException:
+            pass
+        except TimeoutException:
+            pass
+
+    @staticmethod
+    def remover_ventana_notificacion(webdriver_test_ux: WebDriver):
+
+        try:
+            btn_cancelar_notificacion = WebDriverWait(webdriver_test_ux, 6).until(
+                EC.element_to_be_clickable((By.XPATH, '//span[@class="close-btn"][@alt="Descartar"]')))
+
+            btn_cancelar_notificacion.click()
+
+        except ElementNotInteractableException:
+            pass
+        except NoSuchElementException:
+            pass
+        except TimeoutException:
+            pass

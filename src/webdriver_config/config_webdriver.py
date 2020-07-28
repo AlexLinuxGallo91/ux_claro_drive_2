@@ -58,13 +58,13 @@ class ConfiguracionWebDriver:
         perfil_firefox.set_preference("browser.helperApps.alwaysAsk.force",False)
         perfil_firefox.set_preference("browser.helperApps.neverAsk.saveToDisk", mimeTypes)
 
-        opciones_firefox.headless = False
+        opciones_firefox.headless = True
         try:
             webdriver_firefox = webdriver.Firefox(executable_path=self.ruta_web_driver,
                                                   firefox_options=opciones_firefox,
                                                   firefox_profile=perfil_firefox,
                                                   capabilities=firefox_capabilities,
-                                                  #log_path=config_constantes.DEV_NULL
+                                                  log_path=config_constantes.DEV_NULL
                                                   )
         except FileNotFoundError as e:
             print('Sucedio un error al intentar configurar el webdriver: {}'.format(e))
@@ -86,7 +86,7 @@ class ConfiguracionWebDriver:
         # ignora las certificaciones de seguridad, esto solamente se realiza
         # para la experiencia de usuario
         opciones_chrome.add_argument('--ignore-certificate-errors')
-        #opciones_chrome.add_argument("--headless")
+        opciones_chrome.add_argument("--headless")
         opciones_chrome.add_argument('--allow-running-insecure-content')
         opciones_chrome.add_argument("--enable-javascript")
         opciones_chrome.add_argument('window-size=1920x1080')
@@ -101,7 +101,7 @@ class ConfiguracionWebDriver:
             webdriver_chrome = webdriver.Chrome(self.ruta_web_driver,
                                                 chrome_options=opciones_chrome,
                                                 desired_capabilities=chrome_capabilities,
-                                                #service_log_path=config_constantes.DEV_NULL
+                                                service_log_path=config_constantes.DEV_NULL
                                                 )
         except FileNotFoundError as e:
             print('Sucedio un error al intentar configurar el webdriver: {}'.format(e))
