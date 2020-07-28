@@ -40,7 +40,7 @@ def inicio_sesion_claro_drive(webdriver_test_ux: webdriver, jsonEval, jsonArgs):
             EC.presence_of_element_located((By.XPATH, '//button[text()="INICIAR SESI\u00D3N"]')))
         btn_ingreso_cuenta.click()
 
-        WebDriverWait(webdriver_test_ux, 20).until(
+        WebDriverWait(webdriver_test_ux, 120).until(
             EC.element_to_be_clickable((By.XPATH, '//span[text()="Folder "][@class="name-without-extension"]')))
 
         jsonEval["steps"][0]["output"][0]["status"] = jsonConst.SUCCESS
