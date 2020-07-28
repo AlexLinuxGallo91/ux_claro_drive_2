@@ -341,14 +341,15 @@ def main():
     json_evaluacion_claro_drive['time'] = tiempo_final_ejecucion_prueba
     json_evaluacion_claro_drive['status'] = verificacion_estatus_final(json_evaluacion_claro_drive)
 
-    json_evaluacion_claro_drive.update({'body': json_evaluacion_claro_drive})
+    json_finalizado = {}
+    json_finalizado.update({'body': json_evaluacion_claro_drive})
 
     time.sleep(2)
 
     webdriver_ux_test.close()
     webdriver_ux_test.quit()
 
-    print(json.dumps(json_evaluacion_claro_drive))
+    print(json.dumps(json_finalizado))
 
 
 main()
