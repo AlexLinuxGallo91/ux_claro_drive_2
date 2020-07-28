@@ -341,8 +341,7 @@ def main():
     json_evaluacion_claro_drive['time'] = tiempo_final_ejecucion_prueba
     json_evaluacion_claro_drive['status'] = verificacion_estatus_final(json_evaluacion_claro_drive)
 
-    # json_evaluacion_claro_drive = GeneradorJsonBaseEvaluacion. \
-    #    establecer_estructura_principal_json(json_args['user'], json_evaluacion_claro_drive)
+    json_evaluacion_claro_drive.update({'body': json_evaluacion_claro_drive})
 
     time.sleep(2)
 

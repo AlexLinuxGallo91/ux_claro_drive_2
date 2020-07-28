@@ -11,4 +11,4 @@ STEP_OUTPUT_NAME_4 = 'Borrado Imagen Claro Drive'
 STEP_OUTPUT_NAME_5 = 'Cierre Sesion Claro Drive'
 
 SUCCESS = 'SUCCESS'
-FAILED = 'FAILED'
+FAILED = 'FAIL'
